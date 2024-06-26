@@ -7,39 +7,45 @@ import os
 class ExcelMergerApp:
     def __init__(self, root):
         self.root = root
-        self.current_language = "Chinese"  # 初始語言設置為中文
-        self.texts = texts_chinese  # 初始文本設置為中文文本
-        self.root.title(self.texts["title"])
-        self.root.geometry("550x450")
+        self.current_language = "Chinese"
+        self.texts = texts_chinese
+        self.setup_ui()
+        self.update_texts()
 
+    def setup_ui(self):
+        self.root.geometry("550x450")
         self.input_path_var = tk.StringVar()
         self.output_path_var = tk.StringVar()
         self.merge_keys_var = tk.StringVar()
+        self.custom_output_name_var = tk.StringVar()
+        self.create_widgets()
 
+    def create_widgets(self):
+        self.create_language_switch_button()
+        self.create_instructions_label()
+        self.create_folder_selection_buttons()
+        self.create_output_name_entry()
+        self.create_start_merge_button()
+
+    def create_language_switch_button(self):
         self.switch_language_button = tk.Button(
             self.root,
-            text=self.texts["switch_language"],
             command=self.toggle_language,
             width=10,
             pady=5,
         )
         self.switch_language_button.pack(anchor="ne")
 
+    def create_instructions_label(self):
         tk.Label(
             self.root,
-            text=self.texts["instruction_text"],
             justify="left",
             padx=10,
             pady=10,
         ).pack()
 
-        tk.Button(
-            self.root,
-            text=self.texts["select_input_folder"],
-            command=self.select_input_folder,
-            width=20,
-            pady=5,
-        ).pack()
+    def create_folder_selection_buttons(self):
+        self.create_button("select_input_folder", self.select_input_folder)
         tk.Label(
             self.root,
             textvariable=self.input_path_var,
@@ -47,15 +53,7 @@ class ExcelMergerApp:
             pady=5,
             wraplength=500,
         ).pack()
-
-        tk.Button(
-            self.root,
-            text=self.texts["select_output_folder"],
-            command=self.select_output_folder,
-            width=20,
-            pady=5,
-        ).pack()
-
+        self.create_button("select_output_folder", self.select_output_folder)
         tk.Label(
             self.root,
             textvariable=self.output_path_var,
@@ -63,15 +61,7 @@ class ExcelMergerApp:
             pady=5,
             wraplength=500,
         ).pack()
-
-        tk.Button(
-            self.root,
-            text=self.texts["select_reference_file"],
-            command=self.select_reference_file,
-            width=20,
-            pady=5,
-        ).pack()
-
+        self.create_button("select_reference_file", self.select_reference_file)
         tk.Label(
             self.root,
             textvariable=self.merge_keys_var,
@@ -80,58 +70,85 @@ class ExcelMergerApp:
             wraplength=500,
         ).pack()
 
-        tk.Label(
-            self.root,
-            text=self.texts["entry_label"],
-            width=50,
-        ).pack()
-
-        self.custom_output_name_var = tk.StringVar()
-        self.custom_output_name_entry = tk.Entry(
-            self.root, textvariable=self.custom_output_name_var, width=30
+    def create_output_name_entry(self):
+        tk.Label(self.root, width=50).pack()
+        tk.Entry(self.root, textvariable=self.custom_output_name_var, width=30).pack(
+            pady=10
         )
-        self.custom_output_name_entry.pack(pady=10)
 
+    def create_start_merge_button(self):
+        self.create_button("start_merge", self.start_merge)
+
+    def create_button(self, text_key, command):
         tk.Button(
             self.root,
-            text=self.texts["start_merge"],
-            command=self.start_merge,
+            text=self.texts.get(text_key, ""),
+            command=command,
             width=20,
             pady=5,
         ).pack()
 
     def select_input_folder(self):
-        folder_selected = filedialog.askdirectory()
-        self.input_path_var.set(folder_selected)
+        self.input_path_var.set(filedialog.askdirectory())
 
     def select_output_folder(self):
-        folder_selected = filedialog.askdirectory()
-        self.output_path_var.set(folder_selected)
+        self.output_path_var.set(filedialog.askdirectory())
 
     def select_reference_file(self):
-        file_path = filedialog.askopenfilename(filetypes=[("Excel files", "*.xlsx")])
+        file_path = filedialog.askopenfilename(
+            filetypes=[("Excel files", "*.xlsx;*.xls")]
+        )
         if file_path:
             df = pd.read_excel(file_path)
-            columns = df.columns.tolist()
-            self.show_column_selection_dialog(columns)
+            self.show_column_selection_dialog(df.columns.tolist())
 
     def show_column_selection_dialog(self, columns):
         dialog = tk.Toplevel(self.root)
         dialog.title(self.texts["column_selection_dialog_title"])
+        dialog.geometry("400x400+100+100")  # Adjust size for better content fit
+
+        # Instruction label at the top of the dialog
         instruction_label = tk.Label(
             dialog, text=self.texts["column_selection_instruction"], pady=10
         )
         instruction_label.pack()
+
+        container = tk.Frame(dialog)
+        container.pack(fill="both", expand=True)
+
+        canvas = tk.Canvas(container)
+        scrollbar = tk.Scrollbar(container, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas)
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+
+        def on_configure(event):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        scrollable_frame.bind("<Configure>", on_configure)
+
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1 * (event.delta / 120)), "units")
+
+        canvas.bind("<MouseWheel>", _on_mousewheel)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
         var_dict = {}
         for column in columns:
             var = tk.BooleanVar()
-            tk.Checkbutton(dialog, text=column, variable=var).pack(anchor="w")
+            tk.Checkbutton(scrollable_frame, text=column, variable=var).pack(anchor="w")
             var_dict[column] = var
-        tk.Button(
+
+        # Confirm button at the bottom of the dialog, outside the container to avoid scrolling
+        confirm_button = tk.Button(
             dialog,
-            text="確定",
+            text=self.texts["column_selection_confirm_button"],
             command=lambda: self.on_column_selection_confirmed(var_dict, dialog),
-        ).pack()
+        )
+        confirm_button.pack(pady=10)
 
     def on_column_selection_confirmed(self, var_dict, dialog):
         selected_columns = [column for column, var in var_dict.items() if var.get()]
@@ -162,7 +179,7 @@ class ExcelMergerApp:
         combined_df = pd.DataFrame()
         for root, dirs, files in os.walk(root_folder):
             for file in files:
-                if file.endswith(".xlsx"):
+                if file.endswith((".xlsx", ".xls")):  # 支持 .xlsx 和 .xls
                     file_path = os.path.join(root, file)
                     df = pd.read_excel(file_path)
                     if combined_df.empty:
@@ -215,6 +232,7 @@ texts_chinese = {
     "start_merge": "開始合併",
     "column_selection_dialog_title": "選擇欄名",
     "column_selection_instruction": "請選擇要作為合併鍵的列名：",
+    "column_selection_confirm_button": "確認",
     "warning_all_fields_title": "警告",
     "warning_all_fields_message": "請確保所有欄位都已正確填寫！",
     "merge_complete_title": "完成",
@@ -236,12 +254,12 @@ texts_english = {
     "start_merge": "Start merge",
     "column_selection_dialog_title": "Select columns",
     "column_selection_instruction": "Please select the column names to be used as merge keys:",
+    "column_selection_confirm_button": "Confirm",
     "warning_all_fields_title": "Warning",
     "warning_all_fields_message": "Please make sure all fields are correctly filled in!",
     "merge_complete_title": "Complete",
     "merge_complete_message": "Excel files have been merged!",
 }
-
 
 if __name__ == "__main__":
     root = tk.Tk()
