@@ -119,9 +119,9 @@ class ExcelMergerApp:
         tk.Label(self.root, text=self.texts["entry_label"]).pack()
 
     def create_output_name_entry(self):
-        tk.Label(self.root, width=50).pack()
+        tk.Label(self.root, width=50).pack(pady=0)
         tk.Entry(self.root, textvariable=self.custom_output_name_var, width=30).pack(
-            pady=10
+            pady=(0, 10)
         )
 
     def create_start_merge_button(self):
@@ -189,7 +189,6 @@ class ExcelMergerApp:
             tk.Checkbutton(scrollable_frame, text=column, variable=var).pack(anchor="w")
             var_dict[column] = var
 
-        # Confirm button at the bottom of the dialog, outside the container to avoid scrolling
         confirm_button = tk.Button(
             dialog,
             text=self.texts["column_selection_confirm_button"],
@@ -226,9 +225,10 @@ class ExcelMergerApp:
         combined_df = pd.DataFrame()
         for root, dirs, files in os.walk(root_folder):
             for file in files:
-                if file.endswith((".xlsx", ".xls")):  # 支持 .xlsx 和 .xls
+                if file.endswith((".xlsx", ".xls")):
                     file_path = os.path.join(root, file)
                     df = pd.read_excel(file_path)
+                    df.columns = df.columns.str.strip()
                     if combined_df.empty:
                         combined_df = df
                     else:
