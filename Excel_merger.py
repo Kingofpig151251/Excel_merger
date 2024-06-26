@@ -1,3 +1,7 @@
+# python Excel_merger.py
+# First install the required packages, use the following command:
+# pip install -r requirements.txt
+
 import tkinter as tk
 from tkinter import filedialog, messagebox
 import pandas as pd
