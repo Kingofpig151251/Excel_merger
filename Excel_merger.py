@@ -68,6 +68,7 @@ class ExcelMergerApp:
         self.create_language_switch_button()
         self.create_instructions_label()
         self.create_folder_selection_buttons()
+        self.create_output_name_label()
         self.create_output_name_entry()
         self.create_start_merge_button()
 
@@ -113,6 +114,9 @@ class ExcelMergerApp:
             pady=5,
             wraplength=500,
         ).pack()
+
+    def create_output_name_label(self):
+        tk.Label(self.root, text=self.texts["entry_label"]).pack()
 
     def create_output_name_entry(self):
         tk.Label(self.root, width=50).pack()
@@ -248,16 +252,17 @@ class ExcelMergerApp:
 
     def update_texts(self):
         self.root.title(self.texts["title"])
-        self.root.children["!label"].config(text=self.texts["instruction_text"])
         self.root.children["!button"].config(text=self.texts["switch_language"])
         self.root.children["!button2"].config(text=self.texts["select_input_folder"])
         self.root.children["!button3"].config(text=self.texts["select_output_folder"])
         self.root.children["!button4"].config(text=self.texts["select_reference_file"])
         self.root.children["!button5"].config(text=self.texts["start_merge"])
 
+        self.root.children["!label"].config(text=self.texts["instruction_text"])
         self.root.children["!label2"].config(textvariable=self.input_path_var)
         self.root.children["!label3"].config(textvariable=self.output_path_var)
         self.root.children["!label4"].config(textvariable=self.merge_keys_var)
+        self.root.children["!label5"].config(text=self.texts["entry_label"])
 
 
 if __name__ == "__main__":
