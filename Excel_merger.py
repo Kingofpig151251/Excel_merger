@@ -3,6 +3,50 @@ from tkinter import filedialog, messagebox
 import pandas as pd
 import os
 
+texts_chinese = {
+    "title": "Excel合併工具",
+    "instruction_text": """使用說明：
+1. 選擇資源文件夾：包含所有需要合併的Excel文件。
+2. 選擇輸出文件夾：合併後的Excel文件將被保存在此文件夾。
+3. 選擇參考Excel：選擇一個Excel文件以選擇合併的鍵（列名）。
+4. 開始合併：點擊後開始合併過程，完成後會顯示提示。""",
+    "switch_language": "English",
+    "select_input_folder": "選擇資源文件夾",
+    "select_output_folder": "選擇輸出文件夾",
+    "select_reference_file": "選擇參考Excel",
+    "entry_label": "輸出文件名：",
+    "start_merge": "開始合併",
+    "column_selection_dialog_title": "選擇欄名",
+    "column_selection_instruction": "請選擇要作為合併鍵的列名：",
+    "column_selection_confirm_button": "確認",
+    "warning_all_fields_title": "警告",
+    "warning_all_fields_message": "請確保所有欄位都已正確填寫！",
+    "merge_complete_title": "完成",
+    "merge_complete_message": "Excel文件已合併完成！",
+}
+
+texts_english = {
+    "title": "Excel Merger",
+    "instruction_text": """Instructions:
+1. Select input folder: Contains all Excel files to be merged.
+2. Select output folder: The merged Excel file will be saved in this folder.
+3. Select reference Excel: Select an Excel file to choose the merge keys (column names).
+4. Start merge: Click to start the merge process, a prompt will be shown when completed.""",
+    "switch_language": "中文",
+    "select_input_folder": "Select input folder",
+    "select_output_folder": "Select output folder",
+    "select_reference_file": "Select reference Excel",
+    "entry_label": "Output file name:",
+    "start_merge": "Start merge",
+    "column_selection_dialog_title": "Select columns",
+    "column_selection_instruction": "Please select the column names to be used as merge keys:",
+    "column_selection_confirm_button": "Confirm",
+    "warning_all_fields_title": "Warning",
+    "warning_all_fields_message": "Please make sure all fields are correctly filled in!",
+    "merge_complete_title": "Complete",
+    "merge_complete_message": "Excel files have been merged!",
+}
+
 
 class ExcelMergerApp:
     def __init__(self, root):
@@ -105,9 +149,8 @@ class ExcelMergerApp:
     def show_column_selection_dialog(self, columns):
         dialog = tk.Toplevel(self.root)
         dialog.title(self.texts["column_selection_dialog_title"])
-        dialog.geometry("400x400+100+100")  # Adjust size for better content fit
+        dialog.geometry("400x400+100+100")
 
-        # Instruction label at the top of the dialog
         instruction_label = tk.Label(
             dialog, text=self.texts["column_selection_instruction"], pady=10
         )
@@ -216,50 +259,6 @@ class ExcelMergerApp:
         self.root.children["!label3"].config(textvariable=self.output_path_var)
         self.root.children["!label4"].config(textvariable=self.merge_keys_var)
 
-
-texts_chinese = {
-    "title": "Excel合併工具",
-    "instruction_text": """使用說明：
-1. 選擇資源文件夾：包含所有需要合併的Excel文件。
-2. 選擇輸出文件夾：合併後的Excel文件將被保存在此文件夾。
-3. 選擇參考Excel：選擇一個Excel文件以選擇合併的鍵（列名）。
-4. 開始合併：點擊後開始合併過程，完成後會顯示提示。""",
-    "switch_language": "English",
-    "select_input_folder": "選擇資源文件夾",
-    "select_output_folder": "選擇輸出文件夾",
-    "select_reference_file": "選擇參考Excel",
-    "entry_label": "輸出文件名：",
-    "start_merge": "開始合併",
-    "column_selection_dialog_title": "選擇欄名",
-    "column_selection_instruction": "請選擇要作為合併鍵的列名：",
-    "column_selection_confirm_button": "確認",
-    "warning_all_fields_title": "警告",
-    "warning_all_fields_message": "請確保所有欄位都已正確填寫！",
-    "merge_complete_title": "完成",
-    "merge_complete_message": "Excel文件已合併完成！",
-}
-
-texts_english = {
-    "title": "Excel Merger",
-    "instruction_text": """Instructions:
-1. Select input folder: Contains all Excel files to be merged.
-2. Select output folder: The merged Excel file will be saved in this folder.
-3. Select reference Excel: Select an Excel file to choose the merge keys (column names).
-4. Start merge: Click to start the merge process, a prompt will be shown when completed.""",
-    "switch_language": "中文",
-    "select_input_folder": "Select input folder",
-    "select_output_folder": "Select output folder",
-    "select_reference_file": "Select reference Excel",
-    "entry_label": "Output file name:",
-    "start_merge": "Start merge",
-    "column_selection_dialog_title": "Select columns",
-    "column_selection_instruction": "Please select the column names to be used as merge keys:",
-    "column_selection_confirm_button": "Confirm",
-    "warning_all_fields_title": "Warning",
-    "warning_all_fields_message": "Please make sure all fields are correctly filled in!",
-    "merge_complete_title": "Complete",
-    "merge_complete_message": "Excel files have been merged!",
-}
 
 if __name__ == "__main__":
     root = tk.Tk()
