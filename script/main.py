@@ -19,9 +19,6 @@ class Model:
         except Exception as e:
             raise e
 
-    import pandas as pd
-    import os
-
     def merge_files(self):
         dataframes = []
 
