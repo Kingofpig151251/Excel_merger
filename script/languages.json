@@ -28,7 +28,7 @@
         "zh": "如何使用Excel合併工具:"
     },
     "Help Text": {
-        "en": "How to use Excel Merger:\n1. Click 'Select Folder' to choose the folder containing Excel files.\n2. Click 'Select Reference File' to choose the reference Excel file.\n3. Select the columns you want to merge on from the list.\n4. Click 'Merge Files' to merge the files.",
-        "zh": "如何使用Excel合併工具:\n1. 點選'選擇資料夾'以選擇包含Excel檔案的資料夾。\n2. 點選'選擇參考檔案'以選擇參考Excel檔案。\n3. 從清單中選擇要保留的欄。 \n4. 點選'合併文件'以合併文件。 "
+        "en": "How to use Excel Merger:\n1. Click 'Select Folder' to choose a folder containing Excel files.\n2. Click 'Select Reference File' to choose a reference Excel file.\n3. Choose a column from the list to be used as an index. \n4. Click 'Merge Files' to merge the files. ",
+        "zh": "如何使用Excel合併工具:\n1. 點選'選擇資料夾'以選擇包含Excel檔案的資料夾。\n2. 點選'選擇參考檔案'以選擇參考Excel檔案。\n3. 從清單中選擇作為索引的欄。 \n4. 點選'合併文件'以合併文件。 "
     }
 }
