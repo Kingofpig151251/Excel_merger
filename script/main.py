@@ -1,4 +1,5 @@
 import json
+import sys
 import os
 import pandas as pd
 import tkinter as tk
@@ -57,16 +58,22 @@ class View(tk.Tk):
         self.load_translations()
         self.title(self.translate("Title"))
         self.geometry("400x400")
-        script_dir = os.path.dirname(os.path.abspath(__file__))
-        icon_path = os.path.join(
-            script_dir, "../resource/Microsoft_Office_Excel_Logo_512px.ico"
-        )
+        if getattr(sys, "frozen", False):
+            script_dir = sys._MEIPASS
+        else:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+        icon_path = os.path.join(script_dir, "Merger.ico")
         self.iconbitmap(icon_path)
         self.widgets = {}
         self.create_widgets()
 
     def load_translations(self):
-        with open("script/languages.json", "r", encoding="utf-8") as file:
+        if getattr(sys, "frozen", False):
+            script_dir = sys._MEIPASS
+        else:
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+        languages_path = os.path.join(script_dir, "languages.json")
+        with open(languages_path, "r", encoding="utf-8") as file:
             self.translations = json.load(file)
 
     def translate(self, text):
