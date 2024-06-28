@@ -1,4 +1,4 @@
-Download Excel_merger.exe to use this tool
+Download main.exe to use this tool
 
 ![image](https://github.com/Kingofpig151251/Excel_merger/assets/98532667/8e291cd2-6a74-4b9a-b815-6b91d033df5b)
 
