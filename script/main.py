@@ -1,8 +1,8 @@
 import json
+import os
+import pandas as pd
 import tkinter as tk
 from tkinter import filedialog, messagebox
-import pandas as pd
-import os
 
 
 class Model:
@@ -18,8 +18,11 @@ class Model:
         except Exception as e:
             raise e
 
+    import pandas as pd
+    import os
+
     def merge_files(self):
-        merged_df = None
+        dataframes = []
 
         for root, dirs, files in os.walk(self.folder_path):
             for file in files:
@@ -27,14 +30,21 @@ class Model:
                     try:
                         df = pd.read_excel(os.path.join(root, file))
                         df.columns = [col.replace(" ", "") for col in df.columns]
-                        if merged_df is None:
-                            merged_df = df
-                        else:
-                            merged_df = pd.merge(
-                                merged_df, df, on=self.selected_columns, how="outer"
-                            )
+                        dataframes.append(df)
                     except Exception as e:
-                        print(f"Error merging {file}: {str(e)}")
+                        print(f"Error processing {file}: {str(e)}")
+
+        if dataframes:
+            from functools import reduce
+
+            merged_df = reduce(
+                lambda left, right: pd.merge(
+                    left, right, on=self.selected_columns, how="outer"
+                ),
+                dataframes,
+            )
+        else:
+            merged_df = None
 
         return merged_df
 
@@ -47,12 +57,10 @@ class View(tk.Tk):
         self.load_translations()
         self.title(self.translate("Title"))
         self.geometry("400x400")
-        script_dir = os.path.dirname(
-            os.path.abspath(__file__)
-        )  # Get the directory of the current script
+        script_dir = os.path.dirname(os.path.abspath(__file__))
         icon_path = os.path.join(
             script_dir, "../resource/Microsoft_Office_Excel_Logo_512px.ico"
-        )  # Construct the path to the icon
+        )
         self.iconbitmap(icon_path)
         self.widgets = {}
         self.create_widgets()
@@ -180,6 +188,7 @@ class Controller:
             if save_path:
                 merged_df.to_excel(save_path, index=False)
                 messagebox.showinfo("Success", "Files merged successfully")
+                os.startfile(os.path.dirname(save_path))
         else:
             messagebox.showerror("Error", "Failed to merge files or no files to merge")
 
