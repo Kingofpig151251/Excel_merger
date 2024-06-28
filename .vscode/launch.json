@@ -5,7 +5,7 @@
             "name": "Python: Current File",
             "type": "debugpy",
             "request": "launch",
-            "program": "${workspaceFolder}/Excel_merger.py",
+            "program": "${workspaceFolder}/script/main.py",
             "console": "integratedTerminal"
         }
     ]
