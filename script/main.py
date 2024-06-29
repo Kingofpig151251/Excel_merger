@@ -19,9 +19,6 @@ class Model:
         except Exception as e:
             raise e
 
-    import pandas as pd
-    import os
-
     def merge_files(self):
         dataframes = []
 
@@ -58,20 +55,21 @@ class View(tk.Tk):
         self.load_translations()
         self.title(self.translate("Title"))
         self.geometry("400x400")
-        if getattr(sys, "frozen", False):
-            script_dir = sys._MEIPASS
-        else:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
-        icon_path = os.path.join(script_dir, "Merger.ico")
+        script_dir = self.get_script_dir()
+        icon_path = os.path.join(script_dir, "..", "resource", "Merger.ico")
         self.iconbitmap(icon_path)
         self.widgets = {}
         self.create_widgets()
 
-    def load_translations(self):
+    def get_script_dir(self):
         if getattr(sys, "frozen", False):
-            script_dir = sys._MEIPASS
+            print(sys._MEIPASS)
+            return sys._MEIPASS
         else:
-            script_dir = os.path.dirname(os.path.abspath(__file__))
+            return os.path.dirname(os.path.abspath(__file__))
+
+    def load_translations(self):
+        script_dir = self.get_script_dir()
         languages_path = os.path.join(script_dir, "languages.json")
         with open(languages_path, "r", encoding="utf-8") as file:
             self.translations = json.load(file)
@@ -131,15 +129,17 @@ class View(tk.Tk):
 
     def update_ui(self):
         self.title(self.translate("Title"))
-        self.widgets["select_folder_button"]["text"] = self.translate("Select Folder")
-        self.widgets["select_reference_button"]["text"] = self.translate(
-            "Select Reference File"
-        )
-        self.widgets["merge_files_button"]["text"] = self.translate("Merge Files")
-        self.widgets["help_button"]["text"] = self.translate("Help")
-        self.widgets["toggle_language_button"]["text"] = self.translate(
-            "Toggle Language"
-        )
+
+        widget_texts = {
+            "select_folder_button": "Select Folder",
+            "select_reference_button": "Select Reference File",
+            "merge_files_button": "Merge Files",
+            "help_button": "Help",
+            "toggle_language_button": "Toggle Language",
+        }
+
+        for widget_key, text_key in widget_texts.items():
+            self.widgets[widget_key]["text"] = self.translate(text_key)
 
     def update_columns_listbox(self, columns):
         self.columns_listbox.delete(0, tk.END)
