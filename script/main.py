@@ -47,29 +47,31 @@ class Model:
         return merged_df
 
 
+def get_script_dir():
+    if getattr(sys, "frozen", False):
+        _MEIPASS: str
+    else:
+        return os.path.dirname(os.path.abspath(__file__))
+
+
 class View(tk.Tk):
-    def __init__(self, controller):
+    def __init__(self, ctrl):
         super().__init__()
-        self.controller = controller
+        self.columns_listbox = None
+        self.translations = None
+        self.controller = ctrl
         self.language = "en"
         self.load_translations()
         self.title(self.translate("Title"))
         self.geometry("400x400")
-        script_dir = self.get_script_dir()
+        script_dir = get_script_dir()
         icon_path = os.path.join(script_dir, "..", "resource", "Merger.ico")
         self.iconbitmap(icon_path)
         self.widgets = {}
         self.create_widgets()
 
-    def get_script_dir(self):
-        if getattr(sys, "frozen", False):
-            print(sys._MEIPASS)
-            return sys._MEIPASS
-        else:
-            return os.path.dirname(os.path.abspath(__file__))
-
     def load_translations(self):
-        script_dir = self.get_script_dir()
+        script_dir = get_script_dir()
         languages_path = os.path.join(script_dir, "languages.json")
         with open(languages_path, "r", encoding="utf-8") as file:
             self.translations = json.load(file)
